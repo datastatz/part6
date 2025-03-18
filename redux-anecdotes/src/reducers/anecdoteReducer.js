@@ -1,50 +1,21 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit";
 
-// Initial anecdotes stored in Redux state
-const anecdotesAtStart = [
-  'If it hurts, do it more often',
-  'Adding manpower to a late software project makes it later!',
-  'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent accounts for the other 90 percent.',
-  'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
-  'Premature optimization is the root of all evil.',
-  'Debugging is twice as hard as writing the code in the first place. If you write the code as cleverly as possible, you are not smart enough to debug it.'
-]
-
-// Helper function to generate a unique ID
-const getId = () => (100000 * Math.random()).toFixed(0)
-
-// Convert anecdotes into objects with id & votes
-const initialState = anecdotesAtStart.map(content => ({
-  content,
-  id: getId(),
-  votes: 0
-}))
-
-// Create Redux slice (reducers & actions combined)
 const anecdoteSlice = createSlice({
-  name: 'anecdotes',
-  initialState,
+  name: "anecdotes",
+  initialState: [
+    { id: "1", content: "Redux is awesome!", votes: 3 },
+    { id: "2", content: "React and Redux work well together", votes: 5 }
+  ],
   reducers: {
     voteAnecdote(state, action) {
-      const id = action.payload
-      return state.map(anecdote =>
-        anecdote.id === id
-          ? { ...anecdote, votes: anecdote.votes + 1 }
-          : anecdote
-      )
+      const anecdote = state.find(a => a.id === action.payload);
+      anecdote.votes += 1;
     },
-    addAnecdote(state, action) {
-      state.push({
-        content: action.payload,
-        id: getId(),
-        votes: 0
-      })
+    createAnecdote(state, action) {
+      state.push({ id: Date.now().toString(), content: action.payload, votes: 0 });
     }
   }
-})
+});
 
-// Export actions for dispatching
-export const { voteAnecdote, addAnecdote } = anecdoteSlice.actions
-
-// Export reducer for Redux store
-export default anecdoteSlice.reducer
+export const { voteAnecdote, createAnecdote } = anecdoteSlice.actions;
+export default anecdoteSlice.reducer;
